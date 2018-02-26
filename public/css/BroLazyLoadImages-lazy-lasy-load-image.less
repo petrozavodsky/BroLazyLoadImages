@@ -5,11 +5,15 @@
   img {
     position: relative;
     z-index: 10;
-    transition: all .9s;
+    transition: all .4s;
+    transform: scale(1.05);
+
 
     &.blur {
       opacity: 0;
+      transition: none;
     }
+
 
   }
 
@@ -19,13 +23,13 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  left: -6px;
-  right: -6px;
-  top: -6px;
-  bottom: -6px;
+  left: 0;
+  right:0;
+  top: 0;
+  bottom: 0;
   filter: blur(6px);
   background: #e9e9e9 no-repeat center / contain;
   float: left;
-  transform: scale(1.1);
+  transform: scale(1.05);
   z-index: 0;
 }

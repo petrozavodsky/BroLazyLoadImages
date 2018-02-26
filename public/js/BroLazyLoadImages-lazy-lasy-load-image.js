@@ -1,14 +1,11 @@
 if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) {
     window.addEventListener('load', function () {
 
-        // start
         var pItem = document.querySelectorAll('[data-lazy-src]');
         var pCount, timer;
 
-        // scroll and resize events
         window.addEventListener('scroll', scroller, false);
         window.addEventListener('resize', scroller, false);
-
 
         if (MutationObserver) {
             var observer = new MutationObserver(function () {
@@ -19,11 +16,8 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
             observer.observe(document.body, {subtree: true, childList: true, attributes: true, characterData: true});
         }
 
-        // initial check
         inView();
 
-
-        // throttled scroll/resize
         function scroller() {
 
             timer = timer || setTimeout(function () {
@@ -33,8 +27,6 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
 
         }
 
-
-        // image in view?
         function inView() {
 
             if (pItem.length) {
@@ -50,19 +42,14 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
 
                     if (wT < pB && wB > pT) {
                         loadFullImage(pItem[p]);
-                        // pItem[p].classList.remove('replace');
                     }
                     p++;
                 }
-
                 pCount = pItem.length;
-
             }
 
         }
 
-
-        // replace with full image
         function loadFullImage(item) {
 
             var src = item.getAttribute('data-lazy-src');
@@ -72,9 +59,7 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
                 return false;
             }
 
-            // // load image
             var img = new Image();
-
 
             img.src = src;
             img.size = item.size;
@@ -89,27 +74,18 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
                 img.onload = addImg;
             }
 
-            // replace image
             function addImg() {
 
+                var old_img = item.parentNode.getElementsByTagName('img');
+                var p_n = item.parentNode;
+                p_n.replaceChild(img, old_img.item(0));
+                p_n.getElementsByTagName('img').item(0).classList.remove('blur');
 
-                requestAnimationFrame(function () {
-
-                    var old_img = item.parentNode.getElementsByClassName('wp-post-image');
-
-                    item.parentNode.replaceChild(img, old_img[0]).addEventListener(
-                        'animationend',
-                        function (e) {
-                            item.getElementsByClassName('img').classList.remove('blur');
-                        }
-                    );
-
-                });
-
+                console.log(
+                    p_n.getElementsByTagName('img')
+                );
             }
-
         }
-
 
     }, false);
 }

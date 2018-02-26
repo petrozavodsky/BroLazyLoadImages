@@ -6,44 +6,45 @@ class Reformer {
 
 	public function __construct() {
 
+		//get_post_thumbnail_id
 
-		add_filter( 'wp_get_attachment_image_attributes', function ( $attr, $attachment ) {
+		add_filter( 'wp_get_attachment_image_attributes', [ $this, 'image_class_attr' ] );
 
-			if ( in_array( $attachment->ID, [ 306079,294089,292251,293903,240436 ] ) ) {
-				$attr['class'] .= " blur";
-			}
-
-			return $attr;
-		}, 10, 2 );
+		add_filter( 'post_thumbnail_html', [ $this, 'image_html' ], 10, 3 );
+	}
 
 
-		add_filter( 'post_thumbnail_html', function ( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
-			// https://github.com/craigbuckler/progressive-image.js
-			// https://www.sitepoint.com/how-to-build-your-own-progressive-image-loader/
-			#src=[',"]([^"]*)[',"]\h
+	public function image_class_attr( $attr, $attachment ) {
+		if ( ! in_array( $attachment->ID, [ 306079, 294089 ] ) ) {
+			$attr['class'] .= " blur";
+		}
 
-			if ( in_array( $post_id, [ 293658, 293974, 289777, 293765, 240242 ] ) ) {
+		return $attr;
+	}
 
-				$preview = wp_get_attachment_image_src( (int) $post_thumbnail_id, 'image_60x49' );
+	public function image_html( $html, $post_id, $post_thumbnail_id ) {
+
+		if ( ! in_array( intval( $post_thumbnail_id ), [ 306079, 294089 ] ) ) {
+
+			$preview = wp_get_attachment_image_src( (int) $post_thumbnail_id, 'image_60x49' );
 
 
-				$html = str_replace(
-					[ 'src=', 'srcset=', '<img '  ],
-					[ 'data-lazy-src=', 'data-lazy-srcset=', "<img src='{$preview[0]}' " ],
-					$html
-				);
+			$html = str_replace(
+				[ 'src=', 'srcset=', '<img ' ],
+				[ 'data-lazy-src=', 'data-lazy-srcset=', "<img src='{$preview[0]}' " ],
+				$html
+			);
 
-				$res = '';
-				$res .= "<div class='lazy-load-img__wrapper'>";
-				$res .= $html;
-				$res .= "<div style='background-image: url({$preview[0]});' class='lazy-load-img__placeholder'></div>";
-				$res .= "</div>";
+			$res = '';
+			$res .= "<div class='lazy-load-img__wrapper'>";
+			$res .= $html;
+			$res .= "<div style='background-image: url({$preview[0]});' class='lazy-load-img__placeholder'></div>";
+			$res .= "</div>";
 
-				return $res;
-			}
+			return $res;
+		}
 
-			return $html;
-		}, 10, 5 );
+		return $html;
 	}
 
 
