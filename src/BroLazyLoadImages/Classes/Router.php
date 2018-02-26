@@ -18,8 +18,7 @@ class Router {
 		if ( is_front_page() ) {
 			$Assets->js_helper();
 			$this->offset();
-//			new Reformer( $this->exclude );
-			new Reformer( [] );
+			new Reformer( $this->exclude );
 		}
 	}
 
