@@ -18,7 +18,8 @@ class Router {
 		if ( is_front_page() ) {
 			$Assets->js_helper();
 			$this->offset();
-			new Reformer( $this->exclude );
+//			new Reformer( $this->exclude );
+			new Reformer( [] );
 		}
 	}
 
@@ -28,7 +29,7 @@ class Router {
 		if ( count( $array ) >= $this->offset ) {
 			$exclude       = array_slice( $array, 0, $this->offset );
 			$this->exclude = array_map( function ( $element ) {
-				return get_post_thumbnail_id( $element );
+				return  $element->ID;
 			}, $exclude );
 		}
 	}

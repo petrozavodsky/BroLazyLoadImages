@@ -6,25 +6,38 @@
     position: relative;
     z-index: 10;
     transition: opacity 2s linear;
-    transform: scale(1.05);
 
-    &.blur {
+    &[data-lazy-src] {
+      transform: scale(1.05);
       opacity: 0;
-      transition: none;
     }
 
+    &.animated {
+      will-change: transform, opacity;
+      animation: showImage .6s ease-out;
+    }
 
   }
 
 }
 
+@keyframes showImage {
+  0% {
+    transform: scale(1.05);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
 .lazy-load-img__placeholder {
   position: absolute;
   width: 100%;
   height: 100%;
   left: 0;
-  right:0;
+  right: 0;
   top: 0;
   bottom: 0;
   filter: blur(6px);

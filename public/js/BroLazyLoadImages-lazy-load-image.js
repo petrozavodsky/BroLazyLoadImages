@@ -1,4 +1,4 @@
-if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) {
+if (window.addEventListener && document.getElementsByClassName) {
     window.addEventListener('load', function () {
 
         var pItem = document.querySelectorAll('[data-lazy-src]');
@@ -52,39 +52,52 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
 
         function loadFullImage(item) {
 
-            var src = item.getAttribute('data-lazy-src');
-            var srcset = item.getAttribute('data-lazy-srcset');
+            function payload() {
+                var src = item.getAttribute('data-lazy-src');
+                var srcset = item.getAttribute('data-lazy-srcset');
 
-            if (!src) {
-                return false;
+                if (!src) {
+                    return false;
+                }
+
+                var img = new Image();
+
+                img.src = src;
+                img.size = item.size;
+                img.srcset = srcset;
+                img.className = item.className + ' animated';
+                img.height = item.height;
+                img.width = item.width;
+
+                if (img.complete) {
+                    addImg();
+                } else {
+                    img.onload = addImg;
+                }
+
+                function addImg() {
+                    var old_img = item.parentNode.getElementsByTagName('img');
+                    var p_n = item.parentNode;
+                    p_n.replaceChild(img, old_img.item(0));
+                    var added_image = p_n.getElementsByTagName('img');
+
+                    if (window.requestAnimationFrame) {
+                        added_image.item(0).addEventListener('animationend', function (e) {
+                            e.target.classList.remove('animated');
+                        });
+                    } else {
+                        added_image.item(0).classList.remove('animated');
+                    }
+                }
             }
 
-            var img = new Image();
+            if (window.requestAnimationFrame) {
+                requestAnimationFrame(function () {
+                    payload(item);
+                });
 
-            img.src = src;
-            img.size = item.size;
-            img.srcset = srcset;
-            img.className = item.className;
-            img.height = item.height;
-            img.width = item.width;
-
-            if (img.complete) {
-                addImg();
-            } else {
-                img.onload = addImg;
             }
 
-            function addImg() {
-
-                var old_img = item.parentNode.getElementsByTagName('img');
-                var p_n = item.parentNode;
-                p_n.replaceChild(img, old_img.item(0));
-                p_n.getElementsByTagName('img').item(0).classList.remove('blur');
-
-                console.log(
-                    p_n.getElementsByTagName('img')
-                );
-            }
         }
 
     }, false);
