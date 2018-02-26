@@ -9,10 +9,12 @@ class ImageAssets {
 	use Assets;
 
 	public function __construct() {
-		$this->addCss( 'lazy-lasy-load-image' );
+		$this->addCss( 'lazy-load-image' );
 
-		$this->addJs( 'lazy-lasy-load-image','footer');
 	}
 
+	public function js_helper() {
+		$this->addJs( 'lazy-load-image', 'footer' ,[],'1.0.0');
+	}
 
 }
