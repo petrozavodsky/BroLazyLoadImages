@@ -8,7 +8,7 @@ class Reformer {
 
 		//get_post_thumbnail_id
 
-		add_filter( 'wp_get_attachment_image_attributes', [ $this, 'image_class_attr' ] );
+		add_filter( 'wp_get_attachment_image_attributes', [ $this, 'image_class_attr' ],10, 2 );
 
 		add_filter( 'post_thumbnail_html', [ $this, 'image_html' ], 10, 3 );
 	}
