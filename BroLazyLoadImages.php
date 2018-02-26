@@ -21,6 +21,7 @@ new Autoloader( __FILE__, 'BroLazyLoadImages' );
 use BroLazyLoadImages\Base\Wrap;
 use BroLazyLoadImages\Classes\ImageAssets;
 use BroLazyLoadImages\Classes\Reformer;
+use BroLazyLoadImages\Classes\Router;
 
 
 class BroLazyLoadImages extends Wrap {
@@ -33,6 +34,8 @@ class BroLazyLoadImages extends Wrap {
 		new Reformer();
 
 		new ImageAssets();
+
+		new Router();
 
 	}
 
