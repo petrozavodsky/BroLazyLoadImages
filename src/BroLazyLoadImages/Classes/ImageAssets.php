@@ -10,7 +10,6 @@ class ImageAssets {
 
 	public function __construct() {
 		$this->addCss( 'lazy-load-image' );
-
 	}
 
 	public function js_helper() {

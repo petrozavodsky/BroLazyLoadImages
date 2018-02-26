@@ -31,10 +31,6 @@ class BroLazyLoadImages extends Wrap {
 	function __construct() {
 		self::$textdomine = $this->setTextdomain();
 
-		new Reformer();
-
-		new ImageAssets();
-
 		new Router();
 
 	}
