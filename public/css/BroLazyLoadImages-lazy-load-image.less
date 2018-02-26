@@ -13,7 +13,8 @@
     }
 
     &.animated {
-      will-change: transform, opacity;
+      transform: scale(1);
+      will-change: opacity;
       animation: showImage .6s ease-out;
     }
 
@@ -23,11 +24,9 @@
 
 @keyframes showImage {
   0% {
-    transform: scale(1.05);
     opacity: 0;
   }
   100% {
-    transform: scale(1);
     opacity: 1;
   }
 }
