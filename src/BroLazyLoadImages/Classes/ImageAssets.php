@@ -8,7 +8,7 @@ class ImageAssets {
 
 	use Assets;
 
-	private $version = '1.1.0';
+	private $version = '1.1.1';
 
 	public function __construct() {
 		$this->addCss( 'lazy-load-image', 'header', [], $this->version );
