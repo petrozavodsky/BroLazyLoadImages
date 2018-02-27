@@ -32,8 +32,10 @@ class BroLazyLoadImages extends Wrap {
 	function __construct() {
 		self::$textdomine = $this->setTextdomain();
 
-		new AddImageSize();
-		new Router();
+		if ( current_user_can( 'activate_plugins' ) ) {
+			new AddImageSize();
+			new Router();
+		}
 
 	}
 

@@ -5,7 +5,7 @@ namespace BroLazyLoadImages\Classes;
 
 class Router {
 
-	public $offset = 0;
+	public $offset = 2;
 	public $exclude = [];
 
 	public function __construct() {

@@ -8,12 +8,14 @@ class ImageAssets {
 
 	use Assets;
 
+	private $version = '1.1.0';
+
 	public function __construct() {
-		$this->addCss( 'lazy-load-image' );
+		$this->addCss( 'lazy-load-image', 'header', [], $this->version );
 	}
 
 	public function js_helper() {
-		$this->addJs( 'lazy-load-image', 'footer' ,[],'1.0.0');
+		$this->addJs( 'lazy-load-image', 'footer', [], $this->version );
 	}
 
 }

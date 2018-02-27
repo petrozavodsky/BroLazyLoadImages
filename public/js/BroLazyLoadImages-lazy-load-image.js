@@ -23,7 +23,7 @@ if (window.addEventListener && document.getElementsByClassName) {
             timer = timer || setTimeout(function () {
                 timer = null;
                 inView();
-            }, 300);
+            }, 400);
 
         }
 
@@ -52,9 +52,12 @@ if (window.addEventListener && document.getElementsByClassName) {
 
         function loadFullImage(item) {
 
-            function payload() {
+            function payload(item) {
                 var src = item.getAttribute('data-lazy-src');
                 var srcset = item.getAttribute('data-lazy-srcset');
+
+                var width = item.getAttribute('width');
+                var height = item.getAttribute('height');
 
                 if (!src) {
                     return false;
@@ -65,37 +68,50 @@ if (window.addEventListener && document.getElementsByClassName) {
                 img.src = src;
                 img.size = item.size;
                 img.srcset = srcset;
-                img.className = item.className + ' animated';
+                img.className = item.className + ' progressive animated hide ';
                 img.height = item.height;
                 img.width = item.width;
 
                 if (img.complete) {
-                    addImg();
+                    addImg(item);
                 } else {
-                    img.onload = addImg;
+                    img.onloadend = addImg(item);
                 }
 
-                function addImg() {
-                    var old_img = item.parentNode.getElementsByTagName('img');
-                    var p_n = item.parentNode;
-                    p_n.replaceChild(img, old_img.item(0));
-                    var added_image = p_n.getElementsByTagName('img');
 
-                    if (window.requestAnimationFrame) {
+                function addImg(item) {
+
+                    if (item) {
+                        var old_img = item.parentNode.getElementsByTagName('img');
+                        var p_n = item.parentNode;
+                        p_n.replaceChild(img, old_img.item(0));
+
+                        var added_image = p_n.getElementsByTagName('img');
+                        added_image.item(0).classList.remove('hide');
+
+                        added_image.item(0).style.minHeight = height + 'px';
+                        added_image.item(0).style.minwidth = width + 'px';
+
                         added_image.item(0).addEventListener('animationend', function (e) {
+                            e.target.style.minHeight = '';
+                            e.target.style.minwidth = '';
+
                             e.target.classList.remove('animated');
                         });
-                    } else {
-                        added_image.item(0).classList.remove('animated');
+
+
                     }
                 }
             }
 
             if (window.requestAnimationFrame) {
+
                 requestAnimationFrame(function () {
                     payload(item);
                 });
 
+            } else {
+                payload(item);
             }
 
         }
