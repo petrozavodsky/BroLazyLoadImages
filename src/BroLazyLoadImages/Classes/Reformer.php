@@ -8,7 +8,7 @@ class Reformer {
 
 	private $size;
 
-	public $embed_images = false;
+	public $embed_images = true;
 
 	public function __construct( $exclude ) {
 
@@ -26,7 +26,7 @@ class Reformer {
 		if ( ! in_array( intval( $post_id ), $this->exclude ) ) {
 
 
-			if ( $this->exclude ) {
+			if ( $this->embed_images ) {
 				$preview = $this->insert_base64_encoded_image_src( $post_thumbnail_id );
 			} else {
 				$preview = $this->insert_image_src( $post_thumbnail_id );
@@ -73,7 +73,12 @@ class Reformer {
 
 		$dirname    = dirname( $data['file'] );
 		$upload_dir = wp_get_upload_dir();
-		$file       = $upload_dir['basedir'] . $dirname . '/' . $file_name;
+		$file       = $upload_dir['basedir'] .'/'. $dirname . '/' . $file_name;
+
+
+		d(
+			file_exists( $file )
+		);
 
 		if ( file_exists( $file ) ) {
 			$imageData = base64_encode( file_get_contents( $file ) );
