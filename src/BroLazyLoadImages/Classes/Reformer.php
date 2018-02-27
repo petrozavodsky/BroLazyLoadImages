@@ -78,7 +78,8 @@ class Reformer {
 		if ( file_exists( $file ) ) {
 			$imageData = base64_encode( file_get_contents( $file ) );
 			$imageSrc  = "data:{$mime};base64,{$imageData}";
-
+		} else {
+			$imageSrc = $this->insert_image_src( $image_id );
 		}
 
 		return $imageSrc;
