@@ -8,6 +8,8 @@ class Reformer {
 
 	private $size;
 
+	public $embed_images = false;
+
 	public function __construct( $exclude ) {
 
 		$this->size = AddImageSize::$size;
@@ -15,6 +17,7 @@ class Reformer {
 		$this->exclude = $exclude;
 
 		add_filter( 'post_thumbnail_html', [ $this, 'image_html' ], 10, 3 );
+
 	}
 
 	public function image_html( $html, $post_id, $post_thumbnail_id ) {
@@ -23,7 +26,11 @@ class Reformer {
 		if ( ! in_array( intval( $post_id ), $this->exclude ) ) {
 
 
-			$preview = $this->insert_base64_encoded_image_src( $post_thumbnail_id );
+			if ( $this->exclude ) {
+				$preview = $this->insert_base64_encoded_image_src( $post_thumbnail_id );
+			} else {
+				$preview = $this->insert_image_src( $post_thumbnail_id );
+			}
 
 			$html = str_replace(
 				[ 'src=', 'srcset=', '<img ' ],
@@ -44,8 +51,9 @@ class Reformer {
 	}
 
 
-	public function image_helper( $image_id ) {
+	public function insert_image_src( $image_id ) {
 		$preview = wp_get_attachment_image_src( $image_id, $this->size );
+
 		return array_shift( $preview );
 	}
 
