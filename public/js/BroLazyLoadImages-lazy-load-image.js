@@ -75,14 +75,14 @@ if (window.addEventListener && document.getElementsByClassName) {
 
                         if (item) {
 
-                            item.setAttribute('srcset', srcset);
                             item.setAttribute('src', src);
                             item.classList.add('animated');
 
                             item.addEventListener('animationend', function (e) {
+                                item.setAttribute('srcset', srcset);
+                                e.target.removeAttribute('data-lazy-srcset');
                                 e.target.classList.remove('animated');
                                 e.target.removeAttribute('data-lazy-src');
-                                e.target.removeAttribute('data-lazy-srcset');
                             });
 
                         }

@@ -6,17 +6,13 @@
     display: block;
     position: relative;
     z-index: 10;
-    transition: opacity 2s linear;
 
-    &.progressive {
-      background-color: transparent;
-      width: inherit;
-      height: inherit;
-    }
+
 
     &[data-lazy-src] {
       transform: scale(1.05);
-      opacity: .000001;
+      opacity: .0000001;
+      transition: opacity 2s linear;
     }
 
     &.animated {
