@@ -8,7 +8,7 @@ class Reformer {
 
 	private $size;
 
-	public $embed_images = false;
+	public $embed_images = true;
 
 	public function __construct( $exclude ) {
 

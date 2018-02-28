@@ -78,6 +78,9 @@ if (window.addEventListener && document.getElementsByClassName) {
                             item.setAttribute('src', src);
                             item.classList.add('animated');
 
+                            var placeholder = item.parentNode.getElementsByClassName('lazy-load-img__placeholder').item(0);
+                            placeholder.style.backgroundImage = 'url('+src+')';
+
                             item.addEventListener('animationend', function (e) {
                                 item.setAttribute('srcset', srcset);
                                 e.target.removeAttribute('data-lazy-srcset');

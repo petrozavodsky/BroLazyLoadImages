@@ -15,7 +15,12 @@ class Router {
 	public function payload() {
 		$Assets = new ImageAssets();
 
-		if ( is_front_page() ) {
+		if (  is_front_page() ) {
+			$Assets->js_helper();
+			$this->offset();
+			new Reformer( $this->exclude );
+		}elseif ( is_category() || is_tag() || is_tax()){
+			$this->offset = 8;
 			$Assets->js_helper();
 			$this->offset();
 			new Reformer( $this->exclude );
