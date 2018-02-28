@@ -56,51 +56,38 @@ if (window.addEventListener && document.getElementsByClassName) {
                 var src = item.getAttribute('data-lazy-src');
                 var srcset = item.getAttribute('data-lazy-srcset');
 
-                var width = item.getAttribute('width');
-                var height = item.getAttribute('height');
+                if (item.hasAttribute('data-lazy-src')) {
 
-                if (!src) {
-                    return false;
-                }
+                    var img = new Image();
 
-                var img = new Image();
+                    img.src = src;
+                    img.srcset = srcset;
+                    img.height = item.height;
+                    img.width = item.width;
 
-                img.src = src;
-                img.size = item.size;
-                img.srcset = srcset;
-                img.className = item.className + ' progressive animated hide ';
-                img.height = item.height;
-                img.width = item.width;
-
-                if (img.complete) {
-                    addImg(item);
-                } else {
-                    img.onloadend = addImg(item);
-                }
-
-
-                function addImg(item) {
-
-                    if (item) {
-                        var old_img = item.parentNode.getElementsByTagName('img');
-                        var p_n = item.parentNode;
-                        p_n.replaceChild(img, old_img.item(0));
-
-                        var added_image = p_n.getElementsByTagName('img');
-                        added_image.item(0).classList.remove('hide');
-
-                        added_image.item(0).style.minHeight = height + 'px';
-                        added_image.item(0).style.minwidth = width + 'px';
-
-                        added_image.item(0).addEventListener('animationend', function (e) {
-                            e.target.style.minHeight = '';
-                            e.target.style.minwidth = '';
-
-                            e.target.classList.remove('animated');
-                        });
-
-
+                    if (img.complete) {
+                        addImg(item);
+                    } else {
+                        img.onloadend = addImg(item);
                     }
+
+                    function addImg(item) {
+
+                        if (item) {
+
+                            item.setAttribute('srcset', srcset);
+                            item.setAttribute('src', src);
+                            item.classList.add('animated');
+
+                            item.addEventListener('animationend', function (e) {
+                                e.target.classList.remove('animated');
+                                e.target.removeAttribute('data-lazy-src');
+                                e.target.removeAttribute('data-lazy-srcset');
+                            });
+
+                        }
+                    }
+
                 }
             }
 
