@@ -54,14 +54,18 @@ if (window.addEventListener && document.getElementsByClassName) {
 
             function payload(item) {
                 var src = item.getAttribute('data-lazy-src');
-                var srcset = item.getAttribute('data-lazy-srcset');
+                var srcset = false;
 
                 if (item.hasAttribute('data-lazy-src')) {
+
+                    srcset = item.getAttribute('data-lazy-srcset');
 
                     var img = new Image();
 
                     img.src = src;
-                    img.srcset = srcset;
+                    if (srcset) {
+                        img.srcset = srcset;
+                    }
                     img.height = item.height;
                     img.width = item.width;
 
@@ -81,8 +85,12 @@ if (window.addEventListener && document.getElementsByClassName) {
                             var placeholder = item.parentNode.getElementsByClassName('lazy-load-img__placeholder').item(0);
 
                             item.addEventListener('animationend', function (e) {
-                                placeholder.style.backgroundImage = 'url('+src+')';
-                                item.setAttribute('srcset', srcset);
+                                placeholder.style.backgroundImage = 'url(' + src + ')';
+
+                                if (srcset) {
+                                    item.setAttribute('srcset', srcset);
+                                }
+
                                 e.target.removeAttribute('data-lazy-srcset');
                                 e.target.classList.remove('animated');
                                 e.target.removeAttribute('data-lazy-src');
