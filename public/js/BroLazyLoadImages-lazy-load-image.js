@@ -18,12 +18,13 @@ if (window.addEventListener && document.getElementsByClassName) {
 
         inView();
 
+
         function scroller() {
 
             timer = timer || setTimeout(function () {
                 timer = null;
                 inView();
-            }, 400);
+            }, 200);
 
         }
 
@@ -41,7 +42,7 @@ if (window.addEventListener && document.getElementsByClassName) {
                     pB = pT + cRect.height;
 
                     if (wT < pB && wB > pT) {
-                        loadFullImage(pItem[p]);
+                        loadFullImage(pItem[p], p);
                     }
                     p++;
                 }
@@ -50,15 +51,17 @@ if (window.addEventListener && document.getElementsByClassName) {
 
         }
 
-        function loadFullImage(item) {
+        function loadFullImage(item, index) {
 
             function payload(item) {
                 var src = item.getAttribute('data-lazy-src');
                 var srcset = false;
+                var sizes = false;
+
 
                 if (item.hasAttribute('data-lazy-src')) {
-
                     srcset = item.getAttribute('data-lazy-srcset');
+                    sizes = item.getAttribute('sizes');
 
                     var img = new Image();
 
@@ -66,34 +69,32 @@ if (window.addEventListener && document.getElementsByClassName) {
                     if (srcset) {
                         img.srcset = srcset;
                     }
+                    if (sizes) {
+                        img.sizes = sizes;
+                    }
+                    if (item.getAttribute('alt')) {
+                        img.alt = item.getAttribute('alt');
+                    }
                     img.height = item.height;
                     img.width = item.width;
+                    img.className = item.classList.value + ' animated progressive';
 
                     if (img.complete) {
                         addImg(item);
                     } else {
-                        img.onloadend = addImg(item);
+                        img.onload = addImg(item);
                     }
 
                     function addImg(item) {
 
                         if (item) {
 
-                            item.setAttribute('src', src);
-                            item.classList.add('animated');
+                            item.style.visibility = 'hidden';
 
-                            var placeholder = item.parentNode.getElementsByClassName('lazy-load-img__placeholder').item(0);
+                            item.removeAttribute('data-lazy-src');
 
-                            item.addEventListener('animationend', function (e) {
-                                placeholder.style.backgroundImage = 'url(' + src + ')';
-
-                                if (srcset) {
-                                    item.setAttribute('srcset', srcset);
-                                }
-
-                                e.target.removeAttribute('data-lazy-srcset');
+                            item.parentNode.appendChild(img).addEventListener('animationend', function (e) {
                                 e.target.classList.remove('animated');
-                                e.target.removeAttribute('data-lazy-src');
                             });
 
                         }
