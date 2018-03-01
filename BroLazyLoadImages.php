@@ -32,10 +32,8 @@ class BroLazyLoadImages extends Wrap {
 	function __construct() {
 		self::$textdomine = $this->setTextdomain();
 
-		if ( current_user_can( 'edit_published_posts' )  ) {
 			new AddImageSize();
 			new Router();
-		}
 
 	}
 
