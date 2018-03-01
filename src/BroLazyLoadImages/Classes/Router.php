@@ -16,6 +16,7 @@ class Router {
 		$Assets = new ImageAssets();
 
 		if (  is_front_page() ) {
+			$this->offset = 5;
 			$Assets->js_helper();
 			$this->offset();
 			new Reformer( $this->exclude );

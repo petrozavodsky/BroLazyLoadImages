@@ -87,9 +87,11 @@ if (window.addEventListener && document.getElementsByClassName) {
                     if (sizes) {
                         img.sizes = sizes;
                     }
-                    if (item.getAttribute('alt')) {
-                        img.alt = item.getAttribute('alt');
-                    }
+
+                    // if (item.getAttribute('alt')) {
+                    //     img.alt = item.getAttribute('alt');
+                    // }
+
                     img.height = item.height;
                     img.width = item.width;
                     img.className = item.classList.value + ' animated progressive';
