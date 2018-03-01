@@ -42,7 +42,8 @@ if (window.addEventListener && document.getElementsByClassName) {
                     pB = pT + cRect.height;
 
                     if (wT < pB && wB > pT) {
-                        loadFullImage(pItem[p], p);
+                        loadFullImage(pItem[p]);
+                        iterator(pItem[p], p);
                     }
                     p++;
                 }
@@ -51,7 +52,21 @@ if (window.addEventListener && document.getElementsByClassName) {
 
         }
 
-        function loadFullImage(item, index) {
+        function iterator(item, index) {
+
+            for (var i = (index - 5); i <= (index + 5); i++) {
+                if (0 <= i && i < pItem.length) {
+                    if (pItem[i].hasAttribute('data-lazy-src')) {
+                        loadFullImage(pItem[i]);
+                        console.log(pItem[i]);
+                    }
+                }
+            }
+
+        }
+
+
+        function loadFullImage(item) {
 
             function payload(item) {
                 var src = item.getAttribute('data-lazy-src');
