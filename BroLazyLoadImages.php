@@ -34,7 +34,6 @@ class BroLazyLoadImages extends Wrap {
 
 			new AddImageSize();
 			new Router();
-
 	}
 
 }
