@@ -5,7 +5,7 @@
   img {
     display: block;
     position: relative;
-    z-index: 10;
+    z-index: 4;
 
     &[data-lazy-src] ,
     &[data-lazy-srcset] {
@@ -23,7 +23,7 @@
     &.progressive{
       display: block;
       position: absolute;
-      z-index: 20;
+      z-index: 5;
       top: 0;
       bottom: 0;
       left: 0;
@@ -58,5 +58,5 @@
   filter: blur(2vw);
   transform: scale(1.05);
   background: transparent no-repeat center / contain;
-  z-index: 5;
+  z-index: 3;
 }
