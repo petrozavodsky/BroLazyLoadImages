@@ -38,15 +38,14 @@ class Reformer extends HtmlParser
 
         }
 
-        $attributes = json_encode($this->getAttributes($html));
+        $attributes = $this->getAttributes($html);
 
-        $attributesBase64 = base64_encode($attributes);
-
-        d($attributesBase64);
+        $attributesJson = json_encode($attributes);
+        $attributesBase64 = base64_encode($attributesJson);
 
         $o = '';
-        $o .= "<div data-attributes='' class='primary progressive replace'>";
-        $o .= "<img sizes='{$this->getAttribute('sizes', $html)}' src='{$preview}' width='{$this->getAttribute('width', $html)}' height='{$this->getAttribute('height', $html)}' class='preview' />";
+        $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";
+        $o .= str_replace('wp-post-image' ,'wp-post-image preview' , $html);
         $o .= "</div>";
 
         return $o;

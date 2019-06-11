@@ -1,8 +1,8 @@
 // progressive-image.js
 // by Craig Buckler, @craigbuckler
-if (window.addEventListener && window.requestAnimationFrame &&
-  document.getElementsByClassName) {
-  window.addEventListener('load', function () {
+if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) {
+
+  window.addEventListener('DOMContentLoaded', function () {
 
     // start
     var pItem = document.getElementsByClassName('progressive replace')
@@ -11,6 +11,7 @@ if (window.addEventListener && window.requestAnimationFrame &&
     // scroll and resize events
     window.addEventListener('scroll', scroller, false)
     window.addEventListener('resize', scroller, false)
+
 
     // DOM mutation observer
     if (MutationObserver) {
@@ -38,7 +39,7 @@ if (window.addEventListener && window.requestAnimationFrame &&
       timer = timer || setTimeout(function () {
         timer = null
         inView()
-      }, 300)
+      }, 100)
 
     }
 
@@ -72,24 +73,19 @@ if (window.addEventListener && window.requestAnimationFrame &&
     // replace with full image
     function loadFullImage (item) {
 
-      console.log(item);
+      var attributes = decode(item.getAttribute('data-attributes'))
 
-      var href = item && (item.getAttribute('data-href') || item.href)
-
-      if (!href) {
-        return
-      }
-
-      // создаем новое изображение
       var img = new Image()
 
-      if (item.dataset) {
-        img.srcset = item.dataset.srcset || ''
-        img.sizes = item.dataset.sizes || ''
-      }
+      for (var key in attributes) {
 
-      img.src = href
-      img.className = 'reveal'
+        if ('class' === key) {
+          img.className = attributes[key] + ' reveal '
+        } else {
+          img[key] = attributes[key]
+        }
+
+      }
 
       if (img.complete) {
         addImg()
@@ -97,28 +93,39 @@ if (window.addEventListener && window.requestAnimationFrame &&
         img.onload = addImg
       }
 
+      function decode (data) {
+        var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+        var o1, o2, o3, h1, h2, h3, h4, bits, i = 0, enc = ''
+        do {
+          h1 = b64.indexOf(data.charAt(i++))
+          h2 = b64.indexOf(data.charAt(i++))
+          h3 = b64.indexOf(data.charAt(i++))
+          h4 = b64.indexOf(data.charAt(i++))
+          bits = h1 << 18 | h2 << 12 | h3 << 6 | h4
+          o1 = bits >> 16 & 0xff
+          o2 = bits >> 8 & 0xff
+          o3 = bits & 0xff
+          if (h3 === 64) enc += String.fromCharCode(o1)
+          else if (h4 === 64) enc += String.fromCharCode(o1, o2)
+          else enc += String.fromCharCode(o1, o2, o3)
+        } while (i < data.length)
+        return JSON.parse(enc)
+      }
+
       // replace image
       function addImg () {
 
         requestAnimationFrame(function () {
 
-          // disable click
-          if (href === item.href) {
-            item.style.cursor = 'default'
-            item.addEventListener('click', function (e) {
-                e.preventDefault()
-              },
-              false,
-            )
-          }
-
-          // preview image
+          /* preview image */
           var pImg = item.querySelector && item.querySelector('img.preview')
 
-          // add full image
+          /* add full image */
           item.insertBefore(img, pImg && pImg.nextSibling).addEventListener('animationend', function () {
 
             // remove preview image
+
+            console.log(pImg);
             if (pImg) {
               img.alt = pImg.alt || ''
               item.removeChild(pImg)

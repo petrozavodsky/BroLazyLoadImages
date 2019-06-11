@@ -1,4 +1,3 @@
-/* progressive image CSS */
 .progressive {
   position: relative;
   display: block;
@@ -16,7 +15,7 @@
 
 .progressive img.preview {
   filter: blur(2vw);
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .progressive img.reveal {
@@ -24,10 +23,10 @@
   left: 0;
   top: 0;
   will-change: transform, opacity;
-  animation: progressiveReveal .6s ease-out;
+  animation: progressiveReveal 1s ease-out;
 }
 
 @keyframes progressiveReveal {
-  0% { transform: scale(1.03); opacity: 0; }
+  0% { transform: scale(1.05); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
