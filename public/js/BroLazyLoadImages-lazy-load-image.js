@@ -1,8 +1,6 @@
-// progressive-image.js
-// by Craig Buckler, @craigbuckler
 if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) {
 
-  window.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('load', function () {
 
     // start
     var pItem = document.getElementsByClassName('progressive replace')
@@ -124,8 +122,6 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
           item.insertBefore(img, pImg && pImg.nextSibling).addEventListener('animationend', function () {
 
             // remove preview image
-
-            console.log(pImg);
             if (pImg) {
               img.alt = pImg.alt || ''
               item.removeChild(pImg)
