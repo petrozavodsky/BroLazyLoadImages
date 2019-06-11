@@ -1,136 +1,139 @@
-if (window.addEventListener && document.getElementsByClassName) {
-    window.addEventListener('load', function () {
+// progressive-image.js
+// by Craig Buckler, @craigbuckler
+if (window.addEventListener && window.requestAnimationFrame &&
+  document.getElementsByClassName) {
+  window.addEventListener('load', function () {
 
-        var pItem = document.querySelectorAll('[data-lazy-src]');
-        var pCount, timer;
+    // start
+    var pItem = document.getElementsByClassName('progressive replace')
+    var pCount, timer
 
-        window.addEventListener('scroll', scroller, false);
-        window.addEventListener('resize', scroller, false);
+    // scroll and resize events
+    window.addEventListener('scroll', scroller, false)
+    window.addEventListener('resize', scroller, false)
 
-        if (MutationObserver) {
-            var observer = new MutationObserver(function () {
-                if (pItem.length !== pCount) {
-                    inView();
-                }
-            });
-            observer.observe(document.body, {subtree: true, childList: true, attributes: true, characterData: true});
+    // DOM mutation observer
+    if (MutationObserver) {
+
+      var observer = new MutationObserver(function () {
+        if (pItem.length !== pCount) {
+          inView()
         }
+      })
+      observer.observe(document.body, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        characterData: true,
+      })
 
-        inView();
+    }
 
+    // initial check
+    inView()
 
-        function scroller() {
+    // throttled scroll/resize
+    function scroller () {
 
-            timer = timer || setTimeout(function () {
-                timer = null;
-                inView();
-            }, 200);
+      timer = timer || setTimeout(function () {
+        timer = null
+        inView()
+      }, 300)
 
-        }
+    }
 
-        function inView() {
+    // image in view?
+    function inView () {
 
-            if (pItem.length) {
+      if (pItem.length) {
+        requestAnimationFrame(function () {
 
-                var wT = window.pageYOffset, wB = wT + window.innerHeight, cRect, pT, pB;
-                var p = 0;
+          var wH = window.innerHeight, cRect, cT, cH, p = 0
+          while (p < pItem.length) {
 
-                while (p < pItem.length) {
+            cRect = pItem[p].getBoundingClientRect()
+            cT = cRect.top
+            cH = cRect.height
 
-                    cRect = pItem[p].getBoundingClientRect();
-                    pT = wT + cRect.top;
-                    pB = pT + cRect.height;
+            if (0 < cT + cH && wH > cT) {
+              loadFullImage(pItem[p])
+              pItem[p].classList.remove('replace')
+            } else p++
 
-                    if (wT < pB && wB > pT) {
-                        loadFullImage(pItem[p]);
-                        iterator(pItem[p], p);
-                    }
-                    p++;
-                }
-                pCount = pItem.length;
+          }
+
+          pCount = pItem.length
+
+        })
+      }
+
+    }
+
+    // replace with full image
+    function loadFullImage (item) {
+
+      console.log(item);
+
+      var href = item && (item.getAttribute('data-href') || item.href)
+
+      if (!href) {
+        return
+      }
+
+      // создаем новое изображение
+      var img = new Image()
+
+      if (item.dataset) {
+        img.srcset = item.dataset.srcset || ''
+        img.sizes = item.dataset.sizes || ''
+      }
+
+      img.src = href
+      img.className = 'reveal'
+
+      if (img.complete) {
+        addImg()
+      } else {
+        img.onload = addImg
+      }
+
+      // replace image
+      function addImg () {
+
+        requestAnimationFrame(function () {
+
+          // disable click
+          if (href === item.href) {
+            item.style.cursor = 'default'
+            item.addEventListener('click', function (e) {
+                e.preventDefault()
+              },
+              false,
+            )
+          }
+
+          // preview image
+          var pImg = item.querySelector && item.querySelector('img.preview')
+
+          // add full image
+          item.insertBefore(img, pImg && pImg.nextSibling).addEventListener('animationend', function () {
+
+            // remove preview image
+            if (pImg) {
+              img.alt = pImg.alt || ''
+              item.removeChild(pImg)
             }
 
-        }
+            img.classList.remove('reveal')
 
-        function iterator(item, index) {
+          })
 
-            for (var i = (index - 5); i <= (index + 5); i++) {
-                if (0 <= i && i < pItem.length) {
-                    if (pItem[i].hasAttribute('data-lazy-src')) {
-                        loadFullImage(pItem[i]);
-                        console.log(pItem[i]);
-                    }
-                }
-            }
+        })
 
-        }
+      }
 
+    }
 
-        function loadFullImage(item) {
+  }, false)
 
-            function payload(item) {
-                var src = item.getAttribute('data-lazy-src');
-                var srcset = false;
-                var sizes = false;
-
-
-                if (item.hasAttribute('data-lazy-src')) {
-                    srcset = item.getAttribute('data-lazy-srcset');
-                    sizes = item.getAttribute('sizes');
-
-                    var img = new Image();
-
-                    img.src = src;
-                    if (srcset) {
-                        img.srcset = srcset;
-                    }
-                    if (sizes) {
-                        img.sizes = sizes;
-                    }
-
-                    // if (item.getAttribute('alt')) {
-                    //     img.alt = item.getAttribute('alt');
-                    // }
-
-                    img.height = item.height;
-                    img.width = item.width;
-                    img.className = item.classList.value + ' animated progressive';
-
-                    if (img.complete) {
-                        addImg(item);
-                    } else {
-                        img.onload = addImg(item);
-                    }
-
-                    function addImg(item) {
-
-                        if (item) {
-
-                            item.style.visibility = 'hidden';
-
-                            item.removeAttribute('data-lazy-src');
-
-                            item.parentNode.appendChild(img).addEventListener('animationend', function (e) {
-                                e.target.classList.remove('animated');
-                            });
-
-                        }
-                    }
-
-                }
-            }
-
-            if (window.requestAnimationFrame) {
-
-                requestAnimationFrame(function () {
-                    payload(item);
-                });
-
-            } else {
-                payload(item);
-            }
-
-        }
-
-    }, false);
 }

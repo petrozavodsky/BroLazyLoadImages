@@ -15,17 +15,22 @@ class Router {
 	public function payload() {
 		$Assets = new ImageAssets();
 
-		if (  is_front_page() ) {
-			$this->offset = 5;
-			$Assets->js_helper();
-			$this->offset();
-			new Reformer( $this->exclude );
-		}elseif ( is_category() || is_tag() || is_tax()){
-			$this->offset = 8;
-			$Assets->js_helper();
-			$this->offset();
-			new Reformer( $this->exclude );
-		}
+        $this->offset = 1;
+        $Assets->js_helper();
+        $this->offset();
+        new Reformer( $this->exclude );
+
+//		if (  is_front_page() ) {
+//			$this->offset = 5;
+//			$Assets->js_helper();
+//			$this->offset();
+//			new Reformer( $this->exclude );
+//		}elseif ( is_category() || is_tag() || is_tax()){
+//			$this->offset = 8;
+//			$Assets->js_helper();
+//			$this->offset();
+//			new Reformer( $this->exclude );
+//		}
 	}
 
 

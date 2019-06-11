@@ -2,90 +2,92 @@
 
 namespace BroLazyLoadImages\Classes;
 
-class Reformer {
+class Reformer extends HtmlParser
+{
 
-	private $exclude = [];
+    private $exclude = [];
 
-	private $size;
+    private $size;
 
-	public $embed_images = true;
+    public $embed_images = true;
 
-	public function __construct( $exclude ) {
+    public function __construct($exclude)
+    {
 
-		$this->size = AddImageSize::$size;
+        $this->size = AddImageSize::$size;
 
-		$this->exclude = $exclude;
+        $this->exclude = $exclude;
 
-		add_filter( 'post_thumbnail_html', [ $this, 'image_html' ], 10, 3 );
+        add_filter('post_thumbnail_html', [$this, 'image_html'], 10, 3);
+    }
 
-	}
-
-	public function image_html( $html, $post_id, $post_thumbnail_id ) {
-
-
-		if ( ! in_array( intval( $post_id ), $this->exclude ) ) {
-
-
-			$preview_url = $this->insert_image_src( $post_thumbnail_id );
-
-			if ( $this->embed_images ) {
-				$preview = $this->insert_base64_encoded_image_src( $post_thumbnail_id );
-			} else {
-				$preview = $preview_url;
-			}
-
-			$html = str_replace(
-				[ 'src=', 'srcset=', '<img ' ],
-				[ 'data-lazy-src=', 'data-lazy-srcset=', "<img src='{$preview_url}' " ],
-				$html
-			);
-
-			$res = '';
-			$res .= "<div class='lazy-load-img__wrapper'>";
-			$res .= $html;
-			$res .= "<div style='background-image: url({$preview});' class='lazy-load-img__placeholder'></div>";
-			$res .= "</div>";
-
-			return $res;
-		}
-
-		return $html;
-	}
+    public function image_html($html, $post_id, $post_thumbnail_id)
+    {
 
 
-	public function insert_image_src( $image_id ) {
-		$preview = wp_get_attachment_image_src( $image_id, $this->size );
+        if (!in_array(intval($post_id), $this->exclude)) {
 
-		return array_shift( $preview );
-	}
 
-	public function insert_base64_encoded_image_src( $image_id ) {
+            $preview_url = $this->insert_image_src($post_thumbnail_id);
 
-		$data = wp_get_attachment_metadata( $image_id );
-		$mime = get_post_mime_type( $image_id );
+            if ($this->embed_images) {
+                $preview = $this->insert_base64_encoded_image_src($post_thumbnail_id);
+            } else {
+                $preview = $preview_url;
+            }
 
-		if ( array_key_exists( $this->size, $data['sizes'] ) ) {
-			$file_name = $data['sizes'][ $this->size ]['file'];
-		} else if ( 0 < count( $data['sizes'] ) ) {
-			$first_size = array_shift( $data['sizes'] );
-			$file_name  = $first_size['file'];
-		} else {
-			$file_name = basename( $data["file"] );
-		}
+        }
 
-		$dirname    = dirname( $data['file'] );
-		$upload_dir = wp_get_upload_dir();
-		$file       = $upload_dir['basedir'] .'/'. $dirname . '/' . $file_name;
+        $attributes = json_encode($this->getAttributes($html));
 
-		if ( file_exists( $file ) ) {
-			$imageData = base64_encode( file_get_contents( $file ) );
-			$imageSrc  = "data:{$mime};base64,{$imageData}";
-		} else {
-			$imageSrc = $this->insert_image_src( $image_id );
-		}
+        $attributesBase64 = base64_encode($attributes);
 
-		return $imageSrc;
-	}
+        d($attributesBase64);
+
+        $o = '';
+        $o .= "<div data-attributes='' class='primary progressive replace'>";
+        $o .= "<img sizes='{$this->getAttribute('sizes', $html)}' src='{$preview}' width='{$this->getAttribute('width', $html)}' height='{$this->getAttribute('height', $html)}' class='preview' />";
+        $o .= "</div>";
+
+        return $o;
+    }
+
+
+    public function insert_image_src($image_id)
+    {
+        $preview = wp_get_attachment_image_src($image_id, $this->size);
+
+        return array_shift($preview);
+    }
+
+    public function insert_base64_encoded_image_src($image_id)
+    {
+
+        $data = wp_get_attachment_metadata($image_id);
+        $mime = get_post_mime_type($image_id);
+
+        if (array_key_exists($this->size, $data['sizes'])) {
+            $file_name = $data['sizes'][$this->size]['file'];
+        } else if (0 < count($data['sizes'])) {
+            $first_size = array_shift($data['sizes']);
+            $file_name = $first_size['file'];
+        } else {
+            $file_name = basename($data["file"]);
+        }
+
+        $dirname = dirname($data['file']);
+        $upload_dir = wp_get_upload_dir();
+        $file = $upload_dir['basedir'] . '/' . $dirname . '/' . $file_name;
+
+        if (file_exists($file)) {
+            $imageData = base64_encode(file_get_contents($file));
+            $imageSrc = "data:{$mime};base64,{$imageData}";
+        } else {
+            $imageSrc = $this->insert_image_src($image_id);
+        }
+
+        return $imageSrc;
+    }
 
 
 }
