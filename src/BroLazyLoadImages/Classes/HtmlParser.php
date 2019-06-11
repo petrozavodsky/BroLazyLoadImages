@@ -34,7 +34,16 @@ class HtmlParser
             return true;
         });
 
-        return array_map('trim', $split);
 
+        $clean = array_map('trim', $split);
+
+        $o = [];
+        foreach ($clean as $value) {
+            $t = str_replace(["'", '"'], '', $value);
+            $a = explode('=', $t);
+            $o[$a[0]] = $a[1];
+        }
+
+        return $o;
     }
 }
