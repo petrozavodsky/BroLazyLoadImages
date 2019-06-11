@@ -15,9 +15,7 @@ class Router {
 	public function payload() {
 		$Assets = new ImageAssets();
 
-        $this->offset = 1;
         $Assets->js_helper();
-        $this->offset();
         new Reformer( $this->exclude );
 
 //		if (  is_front_page() ) {

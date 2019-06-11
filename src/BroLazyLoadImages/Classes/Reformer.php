@@ -28,12 +28,10 @@ class Reformer extends HtmlParser
         if (!in_array(intval($post_id), $this->exclude)) {
 
 
-            $preview_url = $this->insert_image_src($post_thumbnail_id);
+            $preview = $this->insert_image_src($post_thumbnail_id);
 
             if ($this->embed_images) {
                 $preview = $this->insert_base64_encoded_image_src($post_thumbnail_id);
-            } else {
-                $preview = $preview_url;
             }
 
         }
@@ -43,9 +41,20 @@ class Reformer extends HtmlParser
         $attributesJson = json_encode($attributes);
         $attributesBase64 = base64_encode($attributesJson);
 
+
+        $html = $this->removeAttribute('src', $html);
+        $html = $this->removeAttribute('srcset', $html);
+        $html = $this->removeAttribute('sizes', $html);
+
+        $image = str_replace(
+            ['wp-post-image', "<img"],
+            ['wp-post-image preview', "<img src='{$preview}' "],
+            $html
+        );
+
         $o = '';
         $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";
-        $o .= str_replace('wp-post-image' ,'wp-post-image preview' , $html);
+        $o .= $image;
         $o .= "</div>";
 
         return $o;

@@ -10,7 +10,6 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
     window.addEventListener('scroll', scroller, false)
     window.addEventListener('resize', scroller, false)
 
-
     // DOM mutation observer
     if (MutationObserver) {
 
@@ -56,8 +55,9 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
 
             if (0 < cT + cH && wH > cT) {
               loadFullImage(pItem[p])
-              pItem[p].classList.remove('replace')
-            } else p++
+            } else {
+              p++
+            }
 
           }
 
@@ -90,6 +90,8 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
       } else {
         img.onload = addImg
       }
+
+      item.classList.remove('replace')
 
       function decode (data) {
         var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='

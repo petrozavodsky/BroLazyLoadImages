@@ -7,6 +7,11 @@ class HtmlParser
 {
 
 
+    public function removeAttribute($atr, $str)
+    {
+        return preg_replace("~{$atr}=[\"|'](.*)[\"|']\s~imU", '', $str);
+    }
+
     /**
      * Get html attribute by name
      * @param $str
