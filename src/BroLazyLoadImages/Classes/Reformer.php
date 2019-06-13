@@ -13,7 +13,6 @@ class Reformer extends HtmlParser
 
     public function __construct($exclude)
     {
-
         $this->size = AddImageSize::$size;
 
         $this->exclude = $exclude;
@@ -23,10 +22,7 @@ class Reformer extends HtmlParser
 
     public function image_html($html, $post_id, $post_thumbnail_id)
     {
-
-
         if (!in_array(intval($post_id), $this->exclude)) {
-
 
             $preview = $this->insert_image_src($post_thumbnail_id);
 
@@ -41,21 +37,19 @@ class Reformer extends HtmlParser
         $attributesJson = json_encode($attributes);
         $attributesBase64 = base64_encode($attributesJson);
 
-
         $html = $this->removeAttribute('src', $html);
         $html = $this->removeAttribute('srcset', $html);
         $html = $this->removeAttribute('sizes', $html);
 
-
         $image = str_replace(
             ['wp-post-image', "<img"],
-            ['wp-post-image preview', "<img style='max-height: {$attributes['height']}px;' src='{$preview}' "],
+            ['wp-post-image preview', "<img src='{$preview}' "],
             $html
         );
 
 
         $o = '';
-        $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";
+        $o .= "<div  style='max-height: {$attributes['height']}px;' data-attributes='{$attributesBase64}' class='primary progressive replace'>";
         $o .= $image;
         $o .= "</div>";
 
