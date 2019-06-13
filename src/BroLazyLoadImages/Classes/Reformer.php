@@ -46,11 +46,13 @@ class Reformer extends HtmlParser
         $html = $this->removeAttribute('srcset', $html);
         $html = $this->removeAttribute('sizes', $html);
 
+
         $image = str_replace(
             ['wp-post-image', "<img"],
-            ['wp-post-image preview', "<img src='{$preview}' "],
+            ['wp-post-image preview', "<img style='max-height: {$attributes['height']}px;' src='{$preview}' "],
             $html
         );
+
 
         $o = '';
         $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";

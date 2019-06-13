@@ -60,7 +60,6 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
             }
 
           }
-
           pCount = pItem.length
 
         })
@@ -90,8 +89,6 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
       } else {
         img.onload = addImg
       }
-
-      item.classList.remove('replace')
 
       function decode (data) {
         var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
@@ -125,10 +122,8 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
 
             // remove preview image
             if (pImg) {
-              img.alt = pImg.alt || ''
               item.removeChild(pImg)
             }
-
             img.classList.remove('reveal')
 
           })
@@ -136,6 +131,8 @@ if (window.addEventListener && window.requestAnimationFrame && document.getEleme
         })
 
       }
+
+      item.classList.remove('replace')
 
     }
 
