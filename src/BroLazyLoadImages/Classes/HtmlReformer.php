@@ -65,12 +65,12 @@ class HtmlReformer extends HtmlParser
         $html = $this->removeAttribute('srcset', $html);
         $html = $this->removeAttribute('sizes', $html);
         $html = $this->updateAttribute('class', 'preview', $html);
-        $html = $this->updateAttribute('style', "max-height: {$attributes['height']}px;", $html);
+        $html = $this->updateAttribute('style', "height: {$attributes['height']}px; width: {$attributes['width']}px;", $html);
 
         $o = '';
-        $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";
+        $o .= "<span><span data-attributes='{$attributesBase64}' class='primary progressive replace'>";
         $o .= $html;
-        $o .= "</div>";
+        $o .= "</span></span>";
 
         return $o;
     }

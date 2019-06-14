@@ -29,6 +29,7 @@ class Router
 //			$this->offset();
 //			new Reformer( $this->exclude );
         } else if (is_singular()) {
+            $Assets->js_helper();
             new HtmlReformer();
         }
     }
