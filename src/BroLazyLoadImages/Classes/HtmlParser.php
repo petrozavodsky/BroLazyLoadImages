@@ -6,9 +6,18 @@ namespace BroLazyLoadImages\Classes;
 class HtmlParser
 {
 
-    public function updateAttribute($atr, $str)
+    public function updateAttribute($atr, $val, $str)
     {
-        $attr = $this->getAttribute($atr, $str);
+        $oldValue = $this->getAttribute($atr, $str);
+
+        if (!empty($oldValue)) {
+            return str_replace($oldValue, $val, $str);
+        }
+
+        preg_match("~^<\w+\s~im", $str, $m);
+
+        return str_replace($m, "{$m[0]} {$atr}='{$val}' ", $str);
+
     }
 
     /**
