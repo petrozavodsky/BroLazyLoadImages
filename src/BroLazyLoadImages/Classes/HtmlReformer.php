@@ -10,18 +10,20 @@ namespace BroLazyLoadImages\Classes;
 class HtmlReformer extends HtmlParser
 {
 
+    private $image;
+
     public function __construct()
     {
 
-        add_filter('the_content', [$this, 'postHtml'], 50);
+        add_filter('the_content', [$this, 'postHtml'], 300);
+
+        $this->image = new ProgressiveImage();
     }
 
     public function postHtml($html)
     {
 
-        $this->regexSrc($html);
-
-        return $html;
+        return $this->regexSrc($html);
     }
 
     public function regexSrc($str)
@@ -35,9 +37,15 @@ class HtmlReformer extends HtmlParser
         foreach ($images[0] as $image) {
             $id = $this->getAttachmentIdAttribute($image);
             if (false !== $id) {
-//                d($id);
+
+                $str = str_replace(
+                    $image,
+                    "<div> {$image} </div>",
+                    $str
+                );
             }
         }
+
         return $str;
     }
 
@@ -120,4 +128,5 @@ class HtmlReformer extends HtmlParser
 
         return false;
     }
+
 }
