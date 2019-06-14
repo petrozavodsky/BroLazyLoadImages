@@ -29,22 +29,37 @@ class HtmlReformer extends HtmlParser
         preg_match_all('~<img.*>~Uim', $str, $images);
 
         foreach ($images[0] as $image) {
-            $this->getAttachmentIdByClassName($image);
+            $this->getAttachmentIdAttribute($image);
         }
         return $str;
     }
 
-    public function getAttachmentIdByClassName($str)
+    public function getAttachmentIdAttribute($str)
     {
         preg_match("~<img.*class=[\"|'].*wp-image-(\d+).*[\"|'].*>~im", $str, $match);
 
         if (isset($match[1])) {
-            return (int)$match[1];
+            $out = (int)$match[1];
+            if ($this->checkAttachment($out)) {
+                return $out;
+            }
         }
 
-        d($this->getAttribute('src', $str));
+        $dbOut = $this->getImgIdByUrl($this->getAttribute('src', $str));
+
+        if (empty($dbOut) || $this->checkAttachment($dbOut)) {
+            return $dbOut;
+        }
+
+        return false;
     }
 
+
+    /**
+     * Получаем id вложениея по его url
+     * @param null $url
+     * @return bool|int
+     */
     private function getImgIdByUrl($url = null)
     {
         global $wpdb;
@@ -54,19 +69,43 @@ class HtmlReformer extends HtmlParser
         }
 
         $name = basename($url); // имя файла
-
-        $name = preg_replace('~-[0-9]+x[0-9]+(?=\..{2,6})~', '', $name);
-
         $name = preg_replace('~\.[^.]+$~', '', $name);
+        $name = preg_replace('~-[0-9]+x[0-9]+$~', '', $name);
 
-        // очистим чтобы привести к стандартному виду
         $name = sanitize_title(sanitize_file_name($name));
 
+        $name = $wpdb->esc_like($name);
+
+        $query = "SELECT ID FROM `rc_posts` WHERE `guid` LIKE '%{$name}%' AND `post_type` = 'attachment'";
+
         $attachment_id = $wpdb->get_var(
-            $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'attachment'", $name)
+            $query
         );
 
         return intval($attachment_id);
     }
 
+
+    /**
+     * проверяем по id действительно ли существуе такое вложение на нашем сайте
+     * @param $id
+     * @return bool
+     */
+    private function checkAttachment($id)
+    {
+        global $wpdb;
+
+        $out = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT post_status FROM `rc_posts` WHERE `ID` = '%d' AND `post_type` = 'attachment'",
+                $id
+            )
+        );
+
+        if ("inherit" == $out) {
+            return true;
+        }
+
+        return false;
+    }
 }
