@@ -1,8 +1,4 @@
 <?php
-/**
- * User: vladimir rambo petrozavodsky
- * Date: 2019-06-14
- */
 
 namespace BroLazyLoadImages\Classes;
 
@@ -74,7 +70,6 @@ class HtmlReformer extends HtmlParser
         return false;
     }
 
-
     /**
      * Получаем id вложениея по его url
      * @param null $url
@@ -104,7 +99,6 @@ class HtmlReformer extends HtmlParser
 
         return intval($attachment_id);
     }
-
 
     /**
      * проверяем по id действительно ли существуе такое вложение на нашем сайте
