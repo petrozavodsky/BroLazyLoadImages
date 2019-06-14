@@ -13,8 +13,6 @@ class ProgressiveImage extends HtmlParser
     public function __construct()
     {
         $this->size = AddImageSize::$size;
-
-
     }
 
     public function html($html, $thumbnailId)
