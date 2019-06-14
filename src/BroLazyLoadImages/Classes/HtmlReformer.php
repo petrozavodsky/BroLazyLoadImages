@@ -10,9 +10,7 @@ class HtmlReformer extends HtmlParser
 
     public function __construct()
     {
-
         add_filter('the_content', [$this, 'postHtml'], 300);
-
         $this->image = new ProgressiveImage();
     }
 
