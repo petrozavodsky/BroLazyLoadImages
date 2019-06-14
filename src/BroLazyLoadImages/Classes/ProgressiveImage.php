@@ -25,20 +25,18 @@ class ProgressiveImage extends HtmlParser
             $preview = $this->insertBase64EncodedImage_src($thumbnailId);
         }
 
+        // получаем атрибуты
         $attributes = $this->getAttributes($html);
 
+        // обрабатываем атрибуты
         $attributesJson = json_encode($attributes);
         $attributesBase64 = base64_encode($attributesJson);
 
         $html = $this->updateAttribute('src', $preview, $html);
         $html = $this->removeAttribute('srcset', $html);
         $html = $this->removeAttribute('sizes', $html);
-
-
         $html = $this->updateAttribute('class', 'preview', $html);
-
         $html = $this->updateAttribute('style', "max-height: {$attributes['height']}px;", $html);
-
 
         $o = '';
         $o .= "<div data-attributes='{$attributesBase64}' class='primary progressive replace'>";
