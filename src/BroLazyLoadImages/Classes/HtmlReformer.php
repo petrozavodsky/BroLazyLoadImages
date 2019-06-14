@@ -13,7 +13,7 @@ class HtmlReformer extends HtmlParser
     public function __construct()
     {
 
-        add_filter('the_content', [$this, 'postHtml']);
+        add_filter('the_content', [$this, 'postHtml'], 50);
     }
 
     public function postHtml($html)
@@ -28,12 +28,24 @@ class HtmlReformer extends HtmlParser
     {
         preg_match_all('~<img.*>~Uim', $str, $images);
 
+        if (!isset($images[0])) {
+            return $str;
+        }
+
         foreach ($images[0] as $image) {
-           d( $this->getAttachmentIdAttribute($image));
+            $id = $this->getAttachmentIdAttribute($image);
+            if (false !== $id) {
+//                d($id);
+            }
         }
         return $str;
     }
 
+    /**
+     * Вытаскиваем из поста все изображения
+     * @param $str
+     * @return bool|int
+     */
     public function getAttachmentIdAttribute($str)
     {
         preg_match("~<img.*class=[\"|'].*wp-image-(\d+).*[\"|'].*>~im", $str, $match);
