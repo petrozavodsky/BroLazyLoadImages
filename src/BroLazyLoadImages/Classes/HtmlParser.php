@@ -6,7 +6,17 @@ namespace BroLazyLoadImages\Classes;
 class HtmlParser
 {
 
+    public function updateAttribute($atr, $str)
+    {
+        $attr = $this->getAttribute($atr, $str);
+    }
 
+    /**
+     * Remove attribute
+     * @param $atr
+     * @param $str
+     * @return string|string[]|null
+     */
     public function removeAttribute($atr, $str)
     {
         return preg_replace("~{$atr}=[\"|'](.*)[\"|']\s~imU", '', $str);
@@ -22,12 +32,20 @@ class HtmlParser
     {
         preg_match("~{$atr}=[\"|'](.*)[\"|']\s~imU", $str, $m);
 
-        return $m[1];
+        if (isset($m[1])) {
+            return $m[1];
+        }
+
+        return false;
     }
 
     public function getAttributes($sts, $tag = 'img')
     {
         preg_match("~<{$tag}(.*)\/?>~imU", $sts, $m);
+
+        if (!isset($m[1]) || empty($m[1])) {
+            return false;
+        }
 
         $split = preg_split("~\s?[\"|'](\s+)~imU", $m[1]);
 
