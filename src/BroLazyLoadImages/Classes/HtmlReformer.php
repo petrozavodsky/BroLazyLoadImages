@@ -29,7 +29,7 @@ class HtmlReformer extends HtmlParser
         preg_match_all('~<img.*>~Uim', $str, $images);
 
         foreach ($images[0] as $image) {
-            $this->getAttachmentIdAttribute($image);
+           d( $this->getAttachmentIdAttribute($image));
         }
         return $str;
     }
@@ -47,7 +47,7 @@ class HtmlReformer extends HtmlParser
 
         $dbOut = $this->getImgIdByUrl($this->getAttribute('src', $str));
 
-        if (empty($dbOut) || $this->checkAttachment($dbOut)) {
+        if (!empty($dbOut) || $this->checkAttachment($dbOut)) {
             return $dbOut;
         }
 
